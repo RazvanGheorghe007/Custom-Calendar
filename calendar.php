@@ -1,4 +1,9 @@
 <?php
+define("BASEYEAR", 1990);
+define("BASEFIRSTMONTH", 1);
+define("BASELASTMONTH", 13);
+define("EVENMONTHDAYS", 21);
+define("ODDMONTHDAYS", 22);
 /**
 *@title  Custom Calendar
 *@author   Gheorghe
@@ -30,13 +35,13 @@ class Calendar {
         if (null == $year && isset($_GET['year'])) {
             $year = $_GET['year'];
         } else if (null == $year) {
-            $year = 1990;  
+            $year = BASEYEAR;  
         }          
          
         if (null == $month && isset($_GET['month'])) {
             $month = $_GET['month'];
         } else if (null==$month){
-            $month = 1;
+            $month = BASEFIRSTMONTH;
         }                  
         
         $this->currentYear=$year;
@@ -89,13 +94,13 @@ class Calendar {
      
     private function _createNavi() {
 
-        $nextMonth = $this->currentMonth==13?1:intval($this->currentMonth)+1;
-        $nextYear = $this->currentMonth==13?intval($this->currentYear)+1:$this->currentYear;
-        $preMonth = $this->currentMonth==1?13:intval($this->currentMonth)-1;
-        $preYear = $this->currentMonth==1?intval($this->currentYear)-1:$this->currentYear;
-        if ($preYear < 1990 && $preMonth == 13) {
-            $preYear = 1990;
-            $preMonth = 1;
+        $nextMonth = $this->currentMonth==BASELASTMONTH?BASEFIRSTMONTH:intval($this->currentMonth)+1;
+        $nextYear = $this->currentMonth==BASELASTMONTH?intval($this->currentYear)+1:$this->currentYear;
+        $preMonth = $this->currentMonth==BASEFIRSTMONTH?BASELASTMONTH:intval($this->currentMonth)-1;
+        $preYear = $this->currentMonth==BASEFIRSTMONTH?intval($this->currentYear)-1:$this->currentYear;
+        if ($preYear < BASEYEAR && $preMonth == BASELASTMONTH) {
+            $preYear = BASEYEAR;
+            $preMonth = BASEFIRSTMONTH;
         }
          
         return
@@ -118,10 +123,10 @@ class Calendar {
     private function _weeksInMonth($month=null,$year=null) {
 
         if( null==($year) ) {
-            $year =  1990; 
+            $year =  BASEYEAR; 
         }
         if(null==($month)) {
-            $month = 1;
+            $month = BASEFIRSTMONTH;
         }
         $daysInMonths = $this->_daysInMonth($month,$year);
         $numOfweeks = ($daysInMonths%7==0?0:1) + intval($daysInMonths/7);
@@ -135,15 +140,14 @@ class Calendar {
     }
 
     private function _daysInMonth($month = null, $year = null) {
-
-        if ($this->_is_leap_year($year) == true && $month == 13) {
-            return 21;
-        } else {
-            if (($month % 2) == 0)
-                return 21;
-            else
-                return 22;
-        }
+        $return = 0;
+        if (($month % 2) == 0)
+            $return = EVENMONTHDAYS;
+        else
+            $return = ODDMONTHDAYS;
+        if ($this->_is_leap_year($year) == true && $month == BASELASTMONTH) 
+            $return = $return - 1;
+        return $return;
     }
      
     private function _is_leap_year($year) {
@@ -153,28 +157,27 @@ class Calendar {
     private function _getIndexWeek($year, $month, $day) {
         $sum = 0;
         $leap = $this->_getLeapcnt($year);
-        for ($i = 1990; $i <= $year; $i++) {
+        for ($i = BASEYEAR; $i <= $year; $i++) {
             if ($i == $year) {
                 for ($j = 1; $j <= $month; $j++) {
                     if ($j == $month) {
                         $sum+=$day;
                     } else {
-                        $j%2==0?$sum+=21:$sum+=22;
+                        $j%2==0?$sum+=EVENMONTHDAYS:$sum+=ODDMONTHDAYS;
                     }
                 }
             } else {
-                for ($j = 1; $j <= 13; $j++) {
-                    $j%2==0?$sum+=21:$sum+=22;
+                for ($j = 1; $j <= BASELASTMONTH; $j++) {
+                    $j%2==0?$sum+=EVENMONTHDAYS:$sum+=ODDMONTHDAYS;
                 }
             }
         }
         return ($sum-$leap)%7;
-
     }
 
     private function _getLeapcnt($year) {
         $cnt = 0;
-        for ($i=1990; $i < $year; $i++) {
+        for ($i=BASEYEAR; $i < $year; $i++) {
             if ($this->_is_leap_year($i))
                 $cnt++;
         }
