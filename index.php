@@ -18,9 +18,9 @@
                 <h1>Custom Calendar</h1>
                 <p>Build a Calendar Using PHP</p> 
                 <div class="row">
-                    <div class="col-md-3 text-right"></div>
+                    <div class="col-md-3"></div>
                     <div class="col-md-3">
-                        <input type="text" class="form-control" id="seldate" name="seldate" placeholder="mm.dd.yyyy">
+                        <input type="text" class="form-control" id="seldate" name="seldate" placeholder="dd.mm.yyyy">
                     </div>
                     <div class="col-md-3"><button type="button" class="btn btn-primary" id="getday">Get Day</button></div>
                     <div class="col-md-3"></div>
